@@ -86,12 +86,25 @@
       position: absolute;
     }
 
-    /* मितिका ८ वटा कोठाहरू (१२mm बायाँ सारिएको) */
+    /* A/C Payee Field (Top Center/Left) */
+    .ac-payee-field {
+      top: 5mm;
+      left: 70mm;
+      font-size: 16px;
+      font-weight: bold;
+      border-top: 2px solid #000;
+      border-bottom: 2px solid #000;
+      padding: 1px 6px;
+      letter-spacing: 1px;
+      display: none; /* सुरुमा लुकेको हुनेछ */
+    }
+
+    /* मितिका ८ वटा कोठाहरू */
     .date-container {
       top: 8.5mm;
       right: 9.8mm;
       display: flex;
-      gap: 1.88mm;
+      gap: 1.91mm;
     }
 
     .date-box {
@@ -108,11 +121,11 @@
       line-height: 5.8mm;
     }
 
-    /* पाने व्यक्तिको नाम */
+    /* पाने व्यक्तिको नाम (१३mm बायाँ सारिएको) */
     .payee-field {
       top: 24.5mm;
       left: 22mm;
-      width: 135mm;
+      width: 148mm;
     }
 
     .payee-field input {
@@ -121,23 +134,23 @@
       font-weight: bold;
     }
 
-    /* रकम अक्षरमा */
+    /* रकम अक्षरमा (१३mm बायाँ सारिएको) */
     .words-field {
       top: 32.5mm;
       left: 22mm;
-      width: 120mm;
+      width: 133mm;
     }
 
     .words-field input {
       width: 100%;
-      font-size: 14.5px;
+      font-size: 14px;
       font-weight: bold;
     }
 
     /* रकम अङ्कमा */
     .amount-field {
       top: 32.5mm;
-      right: 10.5mm;
+      right: 12mm;
       width: 45mm;
     }
 
@@ -162,6 +175,14 @@
     .controls {
       text-align: center;
       margin: 20px 0;
+    }
+
+    .toggle-container {
+      display: inline-block;
+      margin-right: 15px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
     }
 
     .btn {
@@ -222,7 +243,6 @@
       color: white;
     }
 
-    /* History Table Input Style */
     .chq-input-table {
       width: 100%;
       padding: 5px 8px;
@@ -263,7 +283,7 @@
   <!-- १. Login Screen Overlay -->
   <div id="loginOverlay" class="login-overlay no-print">
     <div class="login-box">
-      <h2>चेक लेखन System Login</h2>
+      <h2>System Login</h2>
       <input type="text" id="username" class="login-input" placeholder="Username">
       <input type="password" id="password" class="login-input" placeholder="Password">
       <button class="login-btn" onclick="checkLogin()">Login</button>
@@ -274,6 +294,9 @@
   <!-- २. Main Cheque Application -->
   <div id="mainApp">
     <div class="cheque-container">
+      <!-- A/C PAYEE ONLY Field -->
+      <div id="acPayeeText" class="field ac-payee-field">A/C PAYEE ONLY</div>
+
       <!-- मितिका ८ वटा कोठाहरू -->
       <div class="field date-container">
         <input type="text" maxlength="1" class="date-box" onkeyup="handleDateInput(event, this, 0)">
@@ -303,8 +326,12 @@
       </div>
     </div>
 
-    <!-- बटनहरू -->
+    <!-- बटनहरू तथा Switches -->
     <div class="controls no-print">
+      <label class="toggle-container">
+        <input type="checkbox" id="acPayeeToggle" onchange="toggleAcPayee()"> A/C Payee Only
+      </label>
+
       <button class="btn btn-print" onclick="printAndSave()">Print & Save</button>
       <button class="btn btn-save" onclick="saveRecord()">Save Record Only</button>
       <button class="btn btn-view" onclick="openHistoryModal()">View History</button>
@@ -369,6 +396,18 @@
     document.getElementById('password').addEventListener('keyup', function(e) {
       if (e.key === 'Enter') checkLogin();
     });
+
+    // A/C Payee Toggle Functionality
+    function toggleAcPayee() {
+      const checkbox = document.getElementById('acPayeeToggle');
+      const acPayeeText = document.getElementById('acPayeeText');
+
+      if (checkbox.checked) {
+        acPayeeText.style.display = 'block';
+      } else {
+        acPayeeText.style.display = 'none';
+      }
+    }
 
     // मिति Typing logic
     function handleDateInput(e, current, index) {
@@ -500,6 +539,8 @@
       document.getElementById('payeeName').value = '';
       document.getElementById('amountNum').value = '';
       document.getElementById('amountWords').value = '';
+      document.getElementById('acPayeeToggle').checked = false;
+      toggleAcPayee();
       if(boxes.length > 0) boxes[0].focus();
     }
 
